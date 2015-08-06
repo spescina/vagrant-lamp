@@ -81,10 +81,21 @@ sudo apt-get install -qq ruby1.9.1-dev > /dev/null 2>&1
 gem install --no-rdoc --no-ri mailcatcher
 sudo tee /etc/init/mailcatcher.conf <<EOL
 description "Mailcatcher"
+
 start on runlevel [2345]
 stop on runlevel [!2345]
 respawn
-exec /usr/bin/env $(which mailcatcher) --foreground --http-ip=0.0.0.0
+
+pre-start script
+
+bash << "EOF"
+  mkdir -p /var/log/mailcatcher
+  chown -R vagrant /var/log/mailcatcher
+EOF
+
+end script
+
+exec su - vagrant -c '/usr/local/rvm/gems/ruby-1.9.3-p551/bin/mailcatcher --http-ip=0.0.0.0 &>>/var/log/mailcatcher/mailcatcher.log'
 EOL
 sudo service mailcatcher start
 echo "... done."
