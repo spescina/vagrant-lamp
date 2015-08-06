@@ -5,11 +5,6 @@ echo "Updating repositories..."
 sudo apt-get update
 echo "... done."
 
-# Upgrading
-echo "Upgrading system packages..."
-sudo apt-get -y upgrade
-echo "... done."
-
 # Installing Apache
 echo "Installing Apache..."
 sudo apt-get -qq install apache2 > /dev/null 2>&1
@@ -77,4 +72,14 @@ echo "... done."
 echo "Configuring virtual hosts..."
 sudo a2dissite 000-default.conf
 sudo rm -rf /var/www/html
+echo "... done."
+
+# Installing Mailcatcher
+echo "Installing Mailcatcher..."
+sudo apt-get install -qq libsqlite3-dev > /dev/null 2>&1
+sudo apt-get install -qq ruby1.9.1-dev > /dev/null 2>&1
+gem install mailcatcher
+sudo echo "@reboot $(which mailcatcher) --ip=0.0.0.0" >> sudo /etc/crontab
+sudo update-rc.d cron defaults
+/usr/bin/env $(which mailcatcher) --ip=0.0.0.0
 echo "... done."
