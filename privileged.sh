@@ -78,8 +78,13 @@ echo "... done."
 echo "Installing Mailcatcher..."
 sudo apt-get install -qq libsqlite3-dev > /dev/null 2>&1
 sudo apt-get install -qq ruby1.9.1-dev > /dev/null 2>&1
-gem install mailcatcher
-sudo echo "@reboot $(which mailcatcher) --ip=0.0.0.0" >> sudo /etc/crontab
-sudo update-rc.d cron defaults
-/usr/bin/env $(which mailcatcher) --ip=0.0.0.0
+gem install --no-rdoc --no-ri mailcatcher
+sudo tee /etc/init/mailcatcher.conf <<EOL
+description "Mailcatcher"
+start on runlevel [2345]
+stop on runlevel [!2345]
+respawn
+exec /usr/bin/env $(which mailcatcher) --foreground --http-ip=0.0.0.0
+EOL
+sudo service mailcatcher start
 echo "... done."

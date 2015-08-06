@@ -10,8 +10,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	
 	# Don't Replace The Default Key https://github.com/mitchellh/vagrant/pull/4707
 	config.ssh.insert_key = false
-
+	
 	# Run The Base Provisioning Script
-	config.vm.provision :shell, path: "./privileged.sh"
+	config.vm.provision :shell, path: "./privileged.sh"	
 
 end
